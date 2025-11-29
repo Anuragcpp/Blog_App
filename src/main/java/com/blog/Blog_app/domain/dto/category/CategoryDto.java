@@ -1,4 +1,4 @@
-package com.blog.Blog_app.domain.dto;
+package com.blog.Blog_app.domain.dto.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
