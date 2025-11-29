@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ErrorController {
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException exception
     ){
@@ -24,6 +24,18 @@ public class ErrorController {
                 .message(exception.getMessage())
                 .build();
         return new ResponseEntity<>(errro,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalStateException(
+            IllegalStateException exception
+    ) {
+        log.error("Caught Exception : "+ exception);
+        ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+                .status(HttpStatus.CONTINUE.value())
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)

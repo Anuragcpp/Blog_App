@@ -6,6 +6,7 @@ import com.blog.Blog_app.domain.dto.respose.SuccessResponse;
 import com.blog.Blog_app.domain.entities.Category;
 import com.blog.Blog_app.mapper.CategoryMapper;
 import com.blog.Blog_app.service.CategoryService;
+import com.blog.Blog_app.utils.HexToUUIDConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -25,6 +27,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private HexToUUIDConverter hexToUUIDConverter;
 
     @GetMapping
     public ResponseEntity<SuccessResponse> listCategory(){
@@ -57,6 +62,21 @@ public class CategoryController {
                 HttpStatus.CREATED
         );
 
+    }
+
+    @DeleteMapping("/{category_id}")
+    public ResponseEntity<SuccessResponse> deleteCategory(
+            @PathVariable(name = "category_id") String  uuid
+            ){
+        categoryService.deleteCategory(HexToUUIDConverter.hexToUUID(uuid));
+        return new ResponseEntity<>(
+                new SuccessResponse(
+                        HttpStatus.OK.value(),
+                        "Category deleted successfully",
+                        null
+                ),
+                HttpStatus.OK
+        );
     }
 
 }
