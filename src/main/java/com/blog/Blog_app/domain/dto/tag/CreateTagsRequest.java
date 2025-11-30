@@ -1,7 +1,5 @@
 package com.blog.Blog_app.domain.dto.tag;
 
-import com.blog.Blog_app.domain.entities.Tag;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

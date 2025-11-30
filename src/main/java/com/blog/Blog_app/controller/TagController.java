@@ -6,6 +6,7 @@ import com.blog.Blog_app.domain.dto.tag.TagResponse;
 import com.blog.Blog_app.domain.entities.Tag;
 import com.blog.Blog_app.mapper.TagMapper;
 import com.blog.Blog_app.service.TagService;
+import com.blog.Blog_app.utils.HexToUUIDConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/v1/tags")
@@ -55,6 +57,22 @@ public class TagController {
                         HttpStatus.OK.value(),
                         "Tag Names Saved successfully",
                         savedTags
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping(path = "/{tag_id}")
+    public ResponseEntity<SuccessResponse> deleteTag(
+            @PathVariable(name = "tag_id") String id
+            ) {
+        UUID uuid = HexToUUIDConverter.hexToUUID(id);
+        tagService.deleteTag(uuid);
+        return new ResponseEntity<>(
+                new SuccessResponse(
+                        HttpStatus.OK.value(),
+                        "Tag deleted successfully",
+                        null
                 ),
                 HttpStatus.OK
         );
