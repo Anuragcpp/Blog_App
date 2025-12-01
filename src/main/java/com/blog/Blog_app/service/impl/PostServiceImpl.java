@@ -124,9 +124,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public void deletePost(UUID postId) {
-        Post post =  postRepository.findById(postId).orElseThrow(()->
-                new EntityNotFoundException("No Post Found associates with id: "+ postId)
-                );
+        Post post =  getPostById(postId);
         postRepository.delete(post);
     }
 
