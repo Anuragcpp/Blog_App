@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
 
         if(categoryId != null) {
             Category category = categoryService.getCategoryById(categoryId);
-            return postRepository.findAllByPostStatusAndCategoryContaining(
+            return postRepository.findAllByPostStatusAndCategory(
                     PostStatus.PUBLISHED,
                     category
             );

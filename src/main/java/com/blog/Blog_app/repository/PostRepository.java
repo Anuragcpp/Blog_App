@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findAllByPostStatusAndCategoryAndTagsContaining(PostStatus status, Category category , Tag tag);
-    List<Post> findAllByPostStatusAndCategoryContaining(PostStatus status, Category category);
+    List<Post> findAllByPostStatusAndCategory(PostStatus status, Category category);
     List<Post> findAllByPostStatusAndTagsContaining(PostStatus status, Tag tag);
     List<Post> findAllByPostStatus(PostStatus status);
 }
