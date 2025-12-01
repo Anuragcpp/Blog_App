@@ -18,6 +18,7 @@ public class HexToUUIDConverter {
 
     // Convert Hex String → UUID
     public static UUID hexToUUID(String hex) {
+        if( hex == null ) return null;
         hex = cleanHex(hex);
 
         if (hex.length() != 32) {

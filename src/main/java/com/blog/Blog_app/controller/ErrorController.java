@@ -1,6 +1,7 @@
 package com.blog.Blog_app.controller;
 
 import com.blog.Blog_app.domain.dto.respose.ApiErrorResponse;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 public class ErrorController {
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(
+            EntityNotFoundException exception
+    ) {
+        log.error("Caught Exception : " + exception);
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiErrorResponse> handleAuthenticationException(
