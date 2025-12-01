@@ -96,4 +96,34 @@ public class PostController {
         );
     }
 
+    @DeleteMapping("/{post_id}")
+    public ResponseEntity<SuccessResponse> deletePost(
+            @PathVariable(name = "post_id") UUID postId
+    ) {
+        postService.deletePost(postId);
+        return new ResponseEntity<>(
+                new SuccessResponse(
+                        HttpStatus.OK.value(),
+                        "Post Deleted Successfully",
+                        null
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/{post_id}")
+    public ResponseEntity<SuccessResponse> getPostById(
+            @PathVariable(name = "post_id") UUID postId
+    ) {
+        Post post = postService.getPostById(postId);
+        return new ResponseEntity<>(
+                new SuccessResponse(
+                        HttpStatus.OK.value(),
+                        "Post Retirved Successfully",
+                        postMapper.toDto(post)
+                ),
+                HttpStatus.OK
+        );
+    }
+
 }

@@ -22,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -96,19 +98,44 @@ public class PostServiceImpl implements PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
     @Override
     public Post updatePost(UpdatePostRequest updatePostRequest) {
         Post post = postRepository.findById(updatePostRequest.getId()).orElseThrow(
                 () -> new EntityNotFoundException("Post not found with id : " + updatePostRequest.getId())
         );
-        Category category = categoryService.getCategoryById(updatePostRequest.getCategoryId());
-        List<Tag> tags = tagService.getTagsByIds(updatePostRequest.getTagIds());
+
+
         post.setTitle(updatePostRequest.getTitle());
         post.setContent(updatePostRequest.getContent());
-        post.setCategory(category);
-        post.setTags(new HashSet<>(tags));
+        if ( !post.getCategory().getId().equals(updatePostRequest.getCategoryId())){
+            Category category = categoryService.getCategoryById(updatePostRequest.getCategoryId());
+            post.setCategory(category);
+        }
+        Set<UUID> existingTags = post.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
+        if ( !existingTags.equals(updatePostRequest.getTagIds())) {
+            List<Tag> tags = tagService.getTagsByIds(updatePostRequest.getTagIds());
+            post.setTags(new HashSet<>(tags));
+        }
         post.setPostStatus(updatePostRequest.getPostStatus());
         return postRepository.save(post);
+    }
+
+    @Transactional
+    @Override
+    public void deletePost(UUID postId) {
+        Post post =  postRepository.findById(postId).orElseThrow(()->
+                new EntityNotFoundException("No Post Found associates with id: "+ postId)
+                );
+        postRepository.delete(post);
+    }
+
+    @Override
+    public Post getPostById(UUID postId) {
+        return postRepository.findById(postId).orElseThrow(()->
+                new EntityNotFoundException("No Post Found Associated with id : " + postId)
+                );
+
     }
 
 
