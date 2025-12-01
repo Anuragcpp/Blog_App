@@ -2,6 +2,7 @@ package com.blog.Blog_app.controller;
 
 import com.blog.Blog_app.domain.dto.post.CreatePostRequestDto;
 import com.blog.Blog_app.domain.dto.post.PostDto;
+import com.blog.Blog_app.domain.dto.post.UpdatePostRequestDto;
 import com.blog.Blog_app.domain.dto.respose.SuccessResponse;
 import com.blog.Blog_app.domain.entities.Post;
 import com.blog.Blog_app.mapper.PostMapper;
@@ -77,6 +78,21 @@ public class PostController {
                         postMapper.toDto(post)
                 ),
                 HttpStatus.CREATED
+        );
+    }
+
+    @PutMapping
+    public ResponseEntity<SuccessResponse> updatePost(
+            @RequestBody UpdatePostRequestDto updatePostRequestDto
+            ) {
+        Post post = postService.updatePost(postMapper.toUpdatePostRequest(updatePostRequestDto));
+        return new ResponseEntity<>(
+                new SuccessResponse(
+                        HttpStatus.OK.value(),
+                        "Post Updated successfully",
+                        postMapper.toDto(post)
+                ),
+                HttpStatus.OK
         );
     }
 

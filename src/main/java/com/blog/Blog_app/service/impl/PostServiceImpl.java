@@ -2,6 +2,7 @@ package com.blog.Blog_app.service.impl;
 
 import com.blog.Blog_app.domain.PostStatus;
 import com.blog.Blog_app.domain.dto.post.CreatePostRequest;
+import com.blog.Blog_app.domain.dto.post.UpdatePostRequest;
 import com.blog.Blog_app.domain.entities.Category;
 import com.blog.Blog_app.domain.entities.Post;
 import com.blog.Blog_app.domain.entities.Tag;
@@ -11,6 +12,7 @@ import com.blog.Blog_app.service.CategoryService;
 import com.blog.Blog_app.service.PostService;
 import com.blog.Blog_app.service.TagService;
 import com.blog.Blog_app.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,8 +81,6 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Post createPost(UUID userId, CreatePostRequest createPostRequest) {
-        log.warn(createPostRequest.toString() );
-        log.warn(userId.toString() );
         User user = userService.getUserById(userId);
         Category category = categoryService.getCategoryById(createPostRequest.getCategoryId());
         List<Tag> tags = tagService.getTagsByIds(createPostRequest.getTagIds());
@@ -93,6 +93,21 @@ public class PostServiceImpl implements PostService {
                 .tags(new HashSet<>(tags))
                 .readingTime(10)
                 .build();
+        return postRepository.save(post);
+    }
+
+    @Override
+    public Post updatePost(UpdatePostRequest updatePostRequest) {
+        Post post = postRepository.findById(updatePostRequest.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Post not found with id : " + updatePostRequest.getId())
+        );
+        Category category = categoryService.getCategoryById(updatePostRequest.getCategoryId());
+        List<Tag> tags = tagService.getTagsByIds(updatePostRequest.getTagIds());
+        post.setTitle(updatePostRequest.getTitle());
+        post.setContent(updatePostRequest.getContent());
+        post.setCategory(category);
+        post.setTags(new HashSet<>(tags));
+        post.setPostStatus(updatePostRequest.getPostStatus());
         return postRepository.save(post);
     }
 
