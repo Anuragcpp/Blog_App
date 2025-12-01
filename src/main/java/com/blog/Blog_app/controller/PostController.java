@@ -1,7 +1,9 @@
 package com.blog.Blog_app.controller;
 
+import com.blog.Blog_app.domain.dto.post.CreatePostRequestDto;
 import com.blog.Blog_app.domain.dto.post.PostDto;
 import com.blog.Blog_app.domain.dto.respose.SuccessResponse;
+import com.blog.Blog_app.domain.entities.Post;
 import com.blog.Blog_app.mapper.PostMapper;
 import com.blog.Blog_app.service.PostService;
 import com.blog.Blog_app.utils.HexToUUIDConverter;
@@ -59,6 +61,22 @@ public class PostController {
                         postDtos
                 ),
                 HttpStatus.OK
+        );
+    }
+
+    @PostMapping
+    public ResponseEntity<SuccessResponse> createPost(
+            @RequestBody CreatePostRequestDto createPostRequestDto,
+            @RequestAttribute UUID userId
+            ){
+        Post post = postService.createPost(userId,postMapper.toCreatePostRequest(createPostRequestDto));
+        return new ResponseEntity<>(
+                new SuccessResponse(
+                        HttpStatus.CREATED.value(),
+                        "Post Created Successfully",
+                        postMapper.toDto(post)
+                ),
+                HttpStatus.CREATED
         );
     }
 
