@@ -4,10 +4,12 @@ import com.blog.Blog_app.domain.PostStatus;
 import com.blog.Blog_app.domain.entities.Category;
 import com.blog.Blog_app.domain.entities.Post;
 import com.blog.Blog_app.domain.entities.Tag;
+import com.blog.Blog_app.domain.entities.User;
 import com.blog.Blog_app.repository.PostRepository;
 import com.blog.Blog_app.service.CategoryService;
 import com.blog.Blog_app.service.PostService;
 import com.blog.Blog_app.service.TagService;
+import com.blog.Blog_app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private TagService tagService;
@@ -57,5 +62,11 @@ public class PostServiceImpl implements PostService {
         }
 
         return postRepository.findAllByPostStatus(PostStatus.PUBLISHED);
+    }
+
+    @Override
+    public List<Post> getDrafts(UUID userId) {
+        User user = userService.getUserById(userId);
+        return postRepository.findAllByAuthorAndPostStatus(user,PostStatus.DRAFT);
     }
 }
